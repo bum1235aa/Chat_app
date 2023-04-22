@@ -1,0 +1,92 @@
+
+<div class="container">
+  <header>
+    <h1>Chat Application</h1>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Username</a></li>
+        <li><a href="/login">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="chat-box" style="background: none;">
+      <div class="chat-header">
+        <h2>Chat Room</h2>
+      </div>
+      <div class="chat-messages"style="overflow-y:scroll;">
+        <ul id="messages">
+
+        </ul>
+        <div class="chat-input">
+          <form id="form">
+            <input type="text" placeholder="Type your message..." id="input">
+            <button type="button" id="btn">Send</button>
+          </form>
+        </div>
+      </div>
+      <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="text" id="user">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        
+        
+        {{#if login}}
+        var user = `{{user}}`;
+        {{else}}
+        var user ="";
+        {{/if}}
+        var socket = io("http://localhost:3001");
+
+        var messages = document.getElementById('messages');
+        var btn = document.getElementById('btn');
+        var input = document.getElementById('input');
+
+        btn.addEventListener('click', function(e) {
+          if (input.value) {
+            socket.emit('chat message', {'msg':input.value,'user':user});
+            input.value = '';
+          }
+        });
+
+        socket.on('chat message', function(data) {
+          var item = document.createElement('li');  
+          messages.appendChild(item);
+          item.innerHTML = '<span class="user">'+data.user+': </span>'+data.msg;
+          
+        });
+
+        socket.on('noty', function(msg){
+          var item = document.createElement('li');
+          item.textContent = msg;
+          messages.appendChild(item);
+        })
+
+
+      </script>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2023 Chat Application</p>
+  </footer>
+</div>
+
+
